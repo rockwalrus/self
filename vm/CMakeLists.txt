@@ -31,6 +31,7 @@ endif()
 #  ${LOCAL_CMAKE_DIR}
 include(common)
 
+include(missing_functions)
 
 # sets SRC_src
 add_subdirectory(src)

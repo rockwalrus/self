@@ -628,6 +628,14 @@ if(UNIX)
   list(APPEND SRC_src ${SRC_unix})
 endif(UNIX)
 
+set(SRC_cygwin_profil
+  unix/os/cygwin_profil.c
+  unix/os/cygwin_profil.h
+)
+
+if(NEED_CYGWIN_PROFIL)
+  list(APPEND SRC_src ${SRC_cygwin_profil})
+endif()
 
 set(SRC_x11
   any/os/xlibWindow.cpp
