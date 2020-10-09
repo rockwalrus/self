@@ -378,7 +378,8 @@ bool OS::setup_snapshot_to_run(const char* fileName) {
 void OS::set_log_buf(FILE* f, char* buf, int bs) {    
 # if  TARGET_OS_VERSION == SOLARIS_VERSION \
   ||  TARGET_OS_VERSION ==  MACOSX_VERSION \
-  ||  TARGET_OS_VERSION ==   LINUX_VERSION
+  ||  TARGET_OS_VERSION ==   LINUX_VERSION \
+  ||  TARGET_OS_VERSION ==  CYGWIN_VERSION
   setvbuf(f, buf, _IOFBF, bs);
   
 # elif  TARGET_OS_VERSION == SUNOS_VERSION
@@ -433,7 +434,9 @@ bool OS::get_swap_space_info(int &totalK, int &freeK) {
 
 # elif  TARGET_OS_VERSION ==  SUNOS_VERSION \
     ||  TARGET_OS_VERSION == MACOSX_VERSION \
-    ||  TARGET_OS_VERSION ==  LINUX_VERSION
+    ||  TARGET_OS_VERSION ==  LINUX_VERSION \
+    ||  TARGET_OS_VERSION == CYGWIN_VERSION 
+
 
 bool OS::get_swap_space_info(int &, int &) {
   return false;
@@ -510,7 +513,8 @@ int OS::min_core(caddr_t addr, size_t len, char *vec) {
 # endif
 
 #if  TARGET_OS_VERSION == SOLARIS_VERSION \
- ||  TARGET_OS_VERSION ==  MACOSX_VERSION
+ ||  TARGET_OS_VERSION ==  MACOSX_VERSION \
+ ||  TARGET_OS_VERSION ==  CYGWIN_VERSION
   void OS::setPageAdvisory(char *start, char *end, int code) {
     if (end - start < OS::dont_bother) return;
     char *ps= real_page_start(start);
@@ -879,7 +883,8 @@ void OS::check_events() {
 
 # if  TARGET_OS_VERSION == SOLARIS_VERSION \
   ||  TARGET_OS_VERSION ==  MACOSX_VERSION \
-  ||  TARGET_OS_VERSION ==  LINUX_VERSION
+  ||  TARGET_OS_VERSION ==  LINUX_VERSION  \
+  ||  TARGET_OS_VERSION == CYGWIN_VERSION 
 extern "C" {
   int malloc_verify() { return 1; }
 }
