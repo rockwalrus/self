@@ -20,6 +20,12 @@ void generation::print()
 
 
 newGeneration::newGeneration(int32 &eden_size, int32 &surv_size, FILE *snap) {
+#if TARGET_OS_VERSION == CYGWIN_VERSION
+  int32 adjust_size = getpagesize();
+#else
+  int32 adjust_size = idealized_page_size;
+#endif
+
 
   map_list= NULL;
   
@@ -34,12 +40,12 @@ newGeneration::newGeneration(int32 &eden_size, int32 &surv_size, FILE *snap) {
   // Need to allocate an extra page because the search operations
   // in sun4.enum.s can walk back a few words before their starting point.
   // This should be fixed sometime by recoding those ops.
-  new_size += idealized_page_size;
+  new_size += adjust_size;
   char *new_spaces= OS::allocate_idealized_page_aligned(
                            new_size, "new space",
-                           HeapStart - idealized_page_size);
-  new_spaces += idealized_page_size;
-  new_size -= idealized_page_size;
+                           HeapStart - adjust_size);
+  new_spaces += adjust_size;
+  new_size -= adjust_size;
 
   // must start on a card boundary
   assert(int(new_spaces) % card_size == 0,

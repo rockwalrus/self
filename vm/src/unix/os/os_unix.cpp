@@ -27,6 +27,12 @@
 
 # include "_os_unix.cpp.incl"
 
+# if TARGET_OS_VERSION == CYGWIN_VERSION
+  #  include <sys/sysinfo.h>
+  #  undef Status
+  #  include <sysinfoapi.h>
+  #  include <memoryapi.h>
+# endif 
 
 # if TARGET_OS_VERSION != MACOSX_VERSION 
 
@@ -454,6 +460,12 @@ int OS::get_page_size() {
 # if  TARGET_OS_VERSION == SOLARIS_VERSION
     static int p= sysconf(_SC_PAGESIZE);
     return p;
+# elif TARGET_OS_VERSION == CYGWIN_VERSION
+    // Cygwin has an interesting definition of page size. See
+    // http://lists.llvm.org/pipermail/llvm-commits/Week-of-Mon-20090518/077853.html
+    SYSTEM_INFO info;
+    GetNativeSystemInfo(&info);
+    return info.dwPageSize;
 # else
     return getpagesize();
 # endif 

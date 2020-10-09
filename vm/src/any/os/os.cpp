@@ -123,9 +123,14 @@ void OS::setDateTimeBuf(struct tm *tod, smi buf[]) {
 char* OS::allocate_idealized_page_aligned(int32 &size, const char *name,
                                           caddr_t desiredAddress, 
                                           bool mustAllocate) {
-  size= roundTo(size, idealized_page_size);
+# if TARGET_OS_VERSION == CYGWIN_VERSION
+  const int32 align = getpagesize();
+# else
+  const int32 align = idealized_page_size;
+# endif
+  size= roundTo(size, align);
   assert(idealized_page_size % get_page_size() == 0, "page size mismatch");
-  char* b = allocate_heap_aligned(desiredAddress, size, idealized_page_size,
+  char* b = allocate_heap_aligned(desiredAddress, size, align,
                                     name, mustAllocate);
   if (b == NULL) size= 0;
   return b;
