@@ -83,10 +83,6 @@ include(makeDeps)
 include(setupVmDate)
 list(APPEND SRC ${SRC_VMDATE})
 
-# pre-compiled headers. (not for Xcode, has its own way)
-if(NOT CMAKE_GENERATOR MATCHES Xcode)
-  add_pch_rule(${SELF_PREFIX_HEADER} SRC)
-endif()
 
 ## setup the acutal executable.
 #
@@ -97,7 +93,8 @@ add_dependencies(${PROJECT_NAME} create_vmDate)
 
 # setup prefix-header for target
 
-include_prefix_header(${PROJECT_NAME} ${SELF_PREFIX_HEADER})
+target_precompile_headers(${PROJECT_NAME} PRIVATE ${SELF_PREFIX_HEADER})
+
 
 # setup linked libraries for target
 target_link_libraries(${PROJECT_NAME} ${EXTRA_LIBRARIES} ${3RD_PARTY_LIBS})

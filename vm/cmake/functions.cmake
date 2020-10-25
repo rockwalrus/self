@@ -120,41 +120,6 @@ macro(add_definitions_if_cmakevar)
   list(APPEND _defines ${_defns})
 endmacro()
 
-
-macro(add_pch_rule _header_filename _src_list)
-  get_filename_component(_header_filename_full ${_header_filename} ABSOLUTE)
-  if(NOT CMAKE_GENERATOR MATCHES Xcode)  
-    set(_cmd)
-    list(APPEND _cmd ${CMAKE_CXX_COMPILER} ${CMAKE_CXX_COMPILER_ARG1})
-    separate_arguments(_cmd)
-    set(_gch_filename "${_header_filename_full}.gch")
-    list(APPEND ${_src_list} ${_gch_filename})
-    
-    #
-    # workaround CMake not including arch in
-    # FLAGS even when defined in CMAKE_OSX_ARCHITECTURES
-    #
-    if(APPLE)
-      foreach(arch ${CMAKE_OSX_ARCHITECTURES})
-        list(APPEND _args -arch ${arch})
-      endforeach()
-    endif()
-    
-    gather_directory_incls(_incls ${CMAKE_CURRENT_SOURCE_DIR} "")
-    list(APPEND _args ${_defines} ${_flags} ${_incls})
-    list(APPEND _args -c ${_header_filename_full} -o ${_gch_filename})
-    separate_arguments(_args)  
-    add_custom_command(OUTPUT ${_gch_filename}
-      # COMMAND rm -f ${_gch_filename}
-      COMMAND ${_cmd} ${_args}
-      DEPENDS ${_header_filename_full})
-    set_source_files_properties(${_gch_filename} PROPERTIES GENERATED TRUE)
-  endif()
-  
-endmacro()
-
-
-
 #
 #
 
